@@ -25,7 +25,7 @@ def load_gif_bytes() -> bytes:
 
 st.title("🍎 Journey to Become a Teacher")
 st.caption("A college student's journey from Year 1 to Year 4 on the way to becoming a teacher")
-
+st.caption("Last updated: 2026. 11. 23")
 gif = load_gif_bytes()
 
 # Embedding as base64 keeps the GIF animated in every Streamlit version.

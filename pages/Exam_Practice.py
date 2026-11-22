@@ -10,8 +10,8 @@ import base64
 import streamlit as st
 import streamlit.components.v1 as components
 
-st.set_page_config(page_title="중등영어 임용 기출 연습", page_icon="📘", layout="wide")
-st.title("중등영어 임용 기출 연습")
+st.set_page_config(page_title="중등영어 임용 기출 풀이", page_icon="📘", layout="wide")
+st.title("중등영어 임용 기출문제")
 st.caption("연도를 선택한 후, 해당 연도 문항을 풀이하고 자동 피드백을 확인하세요.")
 
 # pages/Exam_Practice.py -> repository root

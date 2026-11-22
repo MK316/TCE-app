@@ -19,7 +19,7 @@ This app provides an interactive learning environment
 for practicing past exam questions from the Korean
 Secondary English Teacher Certification Examination.
 
-### How to Use
+### 📗 How to Use
 
 1. Select **Exam Practice** from the sidebar.
 2. Choose an **exam year** from the dropdown menu.
@@ -27,7 +27,7 @@ Secondary English Teacher Certification Examination.
 4. Enter your answers directly into the answer fields.
 5. Click **Check Answer** to receive feedback and explanations.
 
-### Features
+### 📗 Features
 
 - **Year-Based Organization:** Browse questions by exam year.
 - **Interactive Practice:** Enter and check your answers.

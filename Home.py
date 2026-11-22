@@ -13,7 +13,7 @@ from make_gif import generate
 HERE = Path(__file__).parent
 GIF_PATH = HERE / "teacher_dream_en.gif"
 
-st.set_page_config(page_title="Stick Figure Becomes a Teacher", page_icon="🍎", layout="centered")
+st.set_page_config(page_title="Journey to Become a Teacher", page_icon="🍎", layout="centered")
 
 
 @st.cache_data(show_spinner="Drawing the animation...")

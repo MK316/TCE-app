@@ -3,13 +3,13 @@ import streamlit as st
 
 # Page configuration
 st.set_page_config(
-    page_title="English Teacher Certification Exam",
+    page_title="🌱 English Teacher Certification Exam",
     page_icon="📘",
     layout="wide"
 )
 
 # Main page
-st.title("English Teacher Certification Exam")
+st.title("🌱 English Teacher Certification Exam")
 st.subheader("Past Exam Questions & Interactive Practice")
 
 st.markdown("""

@@ -5,6 +5,7 @@ Put this file in the Streamlit app's ``pages/`` directory, and keep the
 """
 from pathlib import Path
 import re
+import base64
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -34,6 +35,14 @@ question = st.selectbox("문항 선택", ["2026-1", "2026-2", "2026-3"] if year 
 
 html_path = YEARS_DIR / year / "index.html"
 html_text = html_path.read_text(encoding="utf-8")
+
+# Embed source images as data URIs so they work in Streamlit's HTML iframe.
+for image_index in range(1, 4):
+    token = f"images/2026-{image_index}.webp"
+    image_file = html_path.parent / "images" / f"2026-{image_index}.webp"
+    if token in html_text and image_file.is_file():
+        encoded = base64.b64encode(image_file.read_bytes()).decode("ascii")
+        html_text = html_text.replace(token, f"data:image/webp;base64,{encoded}")
 
 # Change the initial question in each year's single-file app without JS injection.
 # The HTML app defaults to question 1, or reads ?q= / #q= if hosted directly.

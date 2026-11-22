@@ -23,7 +23,7 @@ def load_gif_bytes() -> bytes:
     return GIF_PATH.read_bytes()
 
 
-st.title("🍎 Stick Figure Becomes a Teacher")
+st.title("🍎 Journey to Become a Teacher")
 st.caption("A college student's journey from Year 1 to Year 4 on the way to becoming a teacher")
 
 gif = load_gif_bytes()

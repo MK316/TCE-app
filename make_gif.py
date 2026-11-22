@@ -1,6 +1,6 @@
-"""졸라맨(스틱 피겨) 애니메이션: 교사를 꿈꾸는 대학생의 1~4학년 성장기 GIF 생성기.
+"""졸라맨(스틱 피겨) 애니메이션: 교사를 꿈꾸는 대학생의 1~4학년 성장기 GIF 생성기 (영문판).
 
-실행:  python make_gif.py   ->  teacher_dream.gif 생성
+실행:  python make_gif.py   ->  teacher_dream_en.gif 생성
 """
 import math
 import os
@@ -23,18 +23,12 @@ GOLD = (240, 180, 40)
 GRAY = (150, 150, 160)
 
 FONT_CANDIDATES = [
-    # Windows
-    "C:/Windows/Fonts/malgunbd.ttf",
-    "C:/Windows/Fonts/malgun.ttf",
-    # macOS
-    "/System/Library/Fonts/AppleSDGothicNeo.ttc",
-    "/System/Library/Fonts/Supplemental/AppleGothic.ttf",
-    # Linux
-    "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf",
-    "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-    "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc",
+    "C:/Windows/Fonts/arialbd.ttf",                              # Windows
+    "C:/Windows/Fonts/arial.ttf",
+    "/System/Library/Fonts/Supplemental/Arial Bold.ttf",         # macOS
+    "/Library/Fonts/Arial Bold.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",      # Linux / Streamlit Cloud
+    "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
 ]
 
 
@@ -42,13 +36,13 @@ def load_font(size):
     for path in FONT_CANDIDATES:
         if os.path.exists(path):
             try:
-                # .ttc 안의 한국어(KR) 서체 index 시도
-                if path.endswith(".ttc") and "Noto" in path:
-                    return ImageFont.truetype(path, size, index=1)
                 return ImageFont.truetype(path, size)
             except OSError:
                 continue
-    return ImageFont.load_default()
+    try:
+        return ImageFont.load_default(size=size)  # Pillow 10.1+ : 크기 조절 가능한 기본 폰트
+    except TypeError:
+        return ImageFont.load_default()
 
 
 F_BIG = load_font(30)
@@ -140,7 +134,7 @@ def ground(d):
 
 def progress(d, year):
     """하단 1~4학년 진행 표시."""
-    labels = ["1학년", "2학년", "3학년", "4학년", "선생님"]
+    labels = ["Year 1", "Year 2", "Year 3", "Year 4", "Teacher"]
     y = 360
     xs = [100 + i * 110 for i in range(5)]
     d.line([(xs[0], y), (xs[-1], y)], fill=GRAY, width=3)
@@ -192,7 +186,7 @@ def walk_angles(t, speed=0.6):
 def scene_intro(f):
     img, d = new_frame()
     ground(d)
-    caption(d, "나의 꿈은 선생님!", "졸라맨 대학생의 4년 이야기")
+    caption(d, "My dream: Teacher!", "A stick-figure student's 4-year journey")
     x = 120 + f * 4
     stick(d, x, GROUND, **walk_angles(f), face="smile")
     # 생각 풍선 + 작은 칠판
@@ -211,12 +205,12 @@ def scene_intro(f):
 def scene_year1(f):
     img, d = new_frame()
     ground(d)
-    caption(d, "1학년 · 사범대학 입학!", "교육학 개론부터 차근차근")
+    caption(d, "Year 1 - Welcome to College!", "Starting with Intro to Education")
     # 건물
     bx = 400
     d.rectangle([bx, 140, bx + 190, GROUND], fill=(235, 228, 215), outline=INK, width=3)
     d.polygon([(bx - 10, 140), (bx + 95, 95), (bx + 200, 140)], fill=(200, 90, 70), outline=INK)
-    text_c(d, (bx + 95, 160), "사범대학", F_MID)
+    text_c(d, (bx + 95, 160), "College of Ed.", F_MID)
     for wx in (bx + 20, bx + 75, bx + 130):
         d.rectangle([wx, 185, wx + 40, 215], fill=(190, 220, 240), outline=INK, width=2)
     d.rectangle([bx + 75, 240, bx + 115, GROUND], fill=(150, 100, 60), outline=INK, width=2)
@@ -231,7 +225,7 @@ def scene_year1(f):
 def scene_year2(f):
     img, d = new_frame()
     ground(d)
-    caption(d, "2학년 · 전공 공부에 몰두", "밤늦게까지 도서관에서")
+    caption(d, "Year 2 - Deep in Study", "Late nights at the library")
     # 창밖 달
     d.rectangle([60, 100, 180, 200], fill=(40, 50, 90), outline=INK, width=3)
     d.ellipse([110, 115, 145, 150], fill=(250, 240, 180))
@@ -251,7 +245,7 @@ def scene_year2(f):
     # 땀방울/열정
     if f % 10 < 6:
         d.text((240, 150), "!", font=F_BIG, fill=ACCENT)
-    text_c(d, (490, 230), f"공부 {f * 4 + 10}시간째...", F_SMALL, GRAY)
+    text_c(d, (520, 230), f"Studying: {f * 4 + 10} hrs...", F_SMALL, GRAY)
     progress(d, 2)
     return img
 
@@ -259,8 +253,8 @@ def scene_year2(f):
 def scene_year3(f):
     img, d = new_frame()
     ground(d)
-    caption(d, "3학년 · 모의수업 연습", "친구들 앞에서 떨리지만 한 번 더!")
-    blackboard(d, 60, 110, 240, 120, ["수업 지도안", "1. 동기 유발", "2. 활동하기"][: 1 + f // 8])
+    caption(d, "Year 3 - Practice Teaching", "Nervous, but one more time!")
+    blackboard(d, 60, 110, 240, 120, ["Lesson Plan", "1. Warm-up", "2. Activity"][: 1 + f // 8])
     point = -125 + math.sin(f * 0.5) * 15
     stick(d, 340, GROUND, arm_r=point, arm_l=25, face="smile")
     # 친구들(작게)
@@ -269,7 +263,7 @@ def scene_year3(f):
         stick(d, fx, GROUND, s=0.75, color=GRAY,
               arm_r=-210 if up else -15, arm_l=15, face="smile")
     if f > 15:
-        text_c(d, (530, 150), "짝짝짝!", F_MID, ACCENT)
+        text_c(d, (530, 150), "Clap clap!", F_MID, ACCENT)
     progress(d, 3)
     return img
 
@@ -278,17 +272,17 @@ def scene_year4(f):
     img, d = new_frame()
     ground(d)
     if f < 14:
-        caption(d, "4학년 · 교육실습", "진짜 학생들을 처음 만나요")
-        blackboard(d, 60, 110, 200, 110, ["안녕, 얘들아!"])
+        caption(d, "Year 4 - Student Teaching", "Meeting real students for the first time")
+        blackboard(d, 60, 110, 200, 110, ["Hello, class!"])
         stick(d, 300, GROUND, arm_r=-125 + math.sin(f) * 20, face="happy")
         for i, kx in enumerate((420, 480, 540, 600)):
             stick(d, kx, GROUND, s=0.6, color=GRAY, face="smile",
                   arm_r=-210 if (f + i) % 4 == 0 else -10)
     else:
-        caption(d, "4학년 · 임용시험", "4년의 노력을 쏟아 붓는 날")
+        caption(d, "Year 4 - Teacher Exam", "Four years of effort, all in one day")
         top = desk(d, 250)
         d.rectangle([300, top - 6, 345, top], fill=(255, 255, 255), outline=INK, width=1)
-        text_c(d, (322, top - 25), "임용시험", F_SMALL)
+        text_c(d, (322, top - 25), "EXAM", F_SMALL)
         stick(d, 220, GROUND, sitting=True, face="focus", glasses=True,
               arm_r=95 + math.sin(f * 1.5) * 8, arm_l=80)
         if f >= 22:
@@ -297,7 +291,7 @@ def scene_year4(f):
             cx, cy, r = 490, 190, int(60 * s)
             d.ellipse([cx - r, cy - r, cx + r, cy + r], outline=ACCENT, width=6)
             if s >= 1:
-                text_c(d, (cx, cy), "합격!", load_font(34), ACCENT)
+                text_c(d, (cx, cy), "PASS!", load_font(30), ACCENT)
     progress(d, 4)
     return img
 
@@ -310,8 +304,8 @@ CONFETTI = [(rng.randint(0, W), rng.randint(-300, 0), rng.choice([ACCENT, GOLD, 
 def scene_teacher(f):
     img, d = new_frame()
     ground(d)
-    caption(d, "드디어 선생님이 되었어요!", "꿈을 향한 4년, 이제 새로운 시작")
-    blackboard(d, 40, 100, 250, 130, ["꿈은", "이루어진다!"])
+    caption(d, "I Became a Teacher!", "4 years of hard work - a new beginning")
+    blackboard(d, 40, 100, 250, 130, ["Dreams", "come true!"])
     stick(d, 330, GROUND, arm_r=-125 + math.sin(f * 0.6) * 15, arm_l=40,
           face="happy", cap=f < 10)
     # 교사 명찰
@@ -330,7 +324,7 @@ def scene_teacher(f):
 SCENES = [scene_intro, scene_year1, scene_year2, scene_year3, scene_year4, scene_teacher]
 
 
-def generate(path="teacher_dream.gif"):
+def generate(path="teacher_dream_en.gif"):
     frames, durations = [], []
     for scene in SCENES:
         for f in range(FRAMES_PER_SCENE):
@@ -345,5 +339,5 @@ def generate(path="teacher_dream.gif"):
 
 
 if __name__ == "__main__":
-    out = generate(str(Path(__file__).with_name("teacher_dream.gif")))
-    print(f"저장 완료: {out} ({out.stat().st_size / 1024:.0f} KB)")
+    out = generate(str(Path(__file__).with_name("teacher_dream_en.gif")))
+    print(f"Saved: {out} ({out.stat().st_size / 1024:.0f} KB)")

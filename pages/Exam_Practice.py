@@ -1,53 +1,110 @@
-import base64
-from pathlib import Path
-import re
 
 import streamlit as st
 import streamlit.components.v1 as components
+from pathlib import Path
+import base64
+import re
 
-st.set_page_config(page_title="중등영어 임용 기출 연습", page_icon="📘", layout="wide")
-st.title("중등영어 임용 기출 연습")
-st.caption("연도를 선택한 후, 해당 연도 문항을 풀이하고 자동 피드백을 확인하세요.")
+# ------------------------------------------
+# Page configuration
+# ------------------------------------------
+st.set_page_config(
+    page_title="English Teacher Certification Exam",
+    page_icon="📘",
+    layout="wide"
+)
 
-ROOT = Path(__file__).resolve().parents[1]
+st.title("English Teacher Certification Exam")
+st.caption("Select an exam year and practice the questions.")
+
+# ------------------------------------------
+# File paths
+# ------------------------------------------
+ROOT = Path(__file__).resolve().parent.parent
 YEARS_DIR = ROOT / "years"
 
-available = sorted(
+# Find available exam years
+available_years = sorted(
     [
-        p.name for p in YEARS_DIR.iterdir()
-        if p.is_dir() and re.fullmatch(r"20\d{2}", p.name) and (p / "index.html").is_file()
+        folder.name
+        for folder in YEARS_DIR.iterdir()
+        if (
+            folder.is_dir()
+            and re.fullmatch(r"20\d{2}", folder.name)
+            and (folder / "index.html").is_file()
+        )
     ],
-    reverse=True,
-) if YEARS_DIR.is_dir() else []
+    reverse=True
+) if YEARS_DIR.exists() else []
 
-if not available:
-    st.error("연도별 HTML 파일을 찾지 못했습니다. years/2026/index.html 등의 경로를 확인하세요.")
+if not available_years:
+    st.warning("No exam questions are available.")
     st.stop()
 
-year = st.selectbox("연도 선택", available, index=0)
-html_path = YEARS_DIR / year / "index.html"
-html_text = html_path.read_text(encoding="utf-8")
+# ------------------------------------------
+# Year selection only
+# ------------------------------------------
+selected_year = st.selectbox(
+    "Select Exam Year",
+    available_years
+)
 
+# ------------------------------------------
+# Load HTML
+# ------------------------------------------
+html_path = YEARS_DIR / selected_year / "index.html"
+html_content = html_path.read_text(encoding="utf-8")
+
+# ------------------------------------------
+# Embed local images
+# ------------------------------------------
 mime_types = {
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
     ".webp": "image/webp",
-    ".gif": "image/gif",
+    ".gif": "image/gif"
 }
 
-pattern = re.compile(r'(["'])((?:images/)[^"']+\.(?:png|jpg|jpeg|webp|gif))(["'])', re.IGNORECASE)
+# Match image paths within HTML or JavaScript
+image_pattern = re.compile(
+    r"(['\"])(images/[^'\"]+\.(?:png|jpg|jpeg|webp|gif))\1",
+    re.IGNORECASE
+)
 
-def replacer(match):
-    quote1, relative_path, quote2 = match.groups()
-    image_file = html_path.parent / relative_path
-    if not image_file.is_file():
+def embed_image(match):
+    quote, relative_path = match.groups()
+
+    image_path = html_path.parent / relative_path
+
+    if not image_path.is_file():
         return match.group(0)
-    mime = mime_types.get(image_file.suffix.lower())
+
+    extension = image_path.suffix.lower()
+    mime = mime_types.get(extension)
+
     if mime is None:
         return match.group(0)
-    encoded = base64.b64encode(image_file.read_bytes()).decode("ascii")
-    return f"{quote1}data:{mime};base64,{encoded}{quote2}"
 
-html_text = pattern.sub(replacer, html_text)
-components.html(html_text, height=1250, scrolling=True)
+    encoded = base64.b64encode(
+        image_path.read_bytes()
+    ).decode("ascii")
+
+    return (
+        f"{quote}data:{mime};base64,{encoded}{quote}"
+    )
+
+# Replace image paths with embedded image data
+html_content = image_pattern.sub(
+    embed_image,
+    html_content
+)
+
+# ------------------------------------------
+# Display exam application
+# ------------------------------------------
+components.html(
+    html_content,
+    height=1250,
+    scrolling=True
+)

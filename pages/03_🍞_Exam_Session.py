@@ -23,7 +23,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, KeepTogether
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, KeepTogether, PageBreak, Flowable
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "exam_manifest.json"
@@ -222,6 +222,8 @@ def report_pdf(sid, name):
                               textColor=MUTED, wordWrap="CJK"))
     styles.add(ParagraphStyle(name="RStrong", fontName=font, fontSize=9, leading=14,
                               textColor=NAVY, wordWrap="CJK"))
+    styles.add(ParagraphStyle(name="RChecklist", fontName=font, fontSize=8.1, leading=12,
+                              textColor=DARK, wordWrap="CJK"))
     styles.add(ParagraphStyle(name="RStatus", fontName=font, fontSize=8.2, leading=12.5,
                               textColor=NAVY, wordWrap="CJK"))
 
@@ -272,7 +274,7 @@ def report_pdf(sid, name):
     # Include saved or checked questions, not merely pages visited for timing.
     attempted = [
         (qid, rec) for qid, rec in records.items()
-        if rec["checked_at"] or float(rec["seconds"] or 0)>0 or any(str(v).strip() for v in read_answers(rec).values())
+        if rec["checked_at"] or any(str(v).strip() for v in read_answers(rec).values())
     ]
     attempted.sort(key=lambda row: (row[0][:4], row[0]), reverse=True)
     years = sorted({qid.split("-")[0] for qid, _ in attempted}, reverse=True)
@@ -280,19 +282,57 @@ def report_pdf(sid, name):
     statuses = [report_status(rec) for _, rec in attempted]
     counts = {status: statuses.count(status) for status in status_labels}
 
+    class ChecklistItem(Flowable):
+        """Render a reliable checkbox/tick as vector paths, independent of font glyphs."""
+        def __init__(self, qid, checked):
+            Flowable.__init__(self)
+            self.qid = qid
+            self.checked = checked
+            self.width = 90
+            self.height = 13
+
+        def draw(self):
+            c = self.canv
+            x, y, side = 1.0, 2.0, 9.0
+            stroke = GREEN if self.checked else MUTED
+            c.setStrokeColor(stroke)
+            c.setLineWidth(0.85)
+            c.roundRect(x, y, side, side, 1.3, fill=0, stroke=1)
+            if self.checked:
+                c.setLineWidth(1.45)
+                p = c.beginPath()
+                p.moveTo(x+1.5, y+4.4)
+                p.lineTo(x+3.8, y+2.0)
+                p.lineTo(x+7.6, y+7.5)
+                c.drawPath(p)
+            c.setFont(font, 9)
+            c.setFillColor(GREEN if self.checked else DARK)
+            c.drawString(15, 2.3, self.qid)
+
+    # Page 1: all available exam questions, with a check only for submitted/checked questions.
+    # Drafts and page visits are intentionally NOT counted as completed.
+    checked_ids = {
+        qid for qid, record in records.items()
+        if record.get("checked_at") and qid in QUESTIONS
+    }
+    all_ids = sorted(QUESTIONS, key=lambda label: (int(QUESTIONS[label]["year"]),
+                      int(label.split("-")[-1])), reverse=True)
+    checked_count = len(checked_ids)
+    latest_check = max((str(record["checked_at"]) for record in records.values()
+                        if record.get("checked_at")), default="No submissions")
+
     story = [
         par("ENGLISH TEACHER EXAM", "RSmall"),
         par("Study Session Report", "RTitle"),
-        par("A record of attempted questions, submitted answers, feedback and time.", "RSubtitle"),
-        par("Learner Information", "RSection"),
+        par("Learner & Session Information", "RSection"),
     ]
-
     learner_data = [
         [par("Learner", "RStrong"), par(name)],
         [par("Session ID", "RStrong"), par(sid)],
         [par("Started", "RStrong"), par(session["created_at"])],
+        [par("Last submission", "RStrong"), par(latest_check)],
         [par("Finished", "RStrong"), par(session["finished_at"] or "In progress")],
-        [par("Report date", "RStrong"), par(utcstamp())],
+        [par("Report generated", "RStrong"), par(utcstamp())],
         [par("Session status", "RStrong"), par(session["status"].title())],
         [par("Recorded time", "RStrong"), par(display_time(elapsed))],
     ]
@@ -303,13 +343,46 @@ def report_pdf(sid, name):
         ("BOX",(0,0),(-1,-1),0.7,LINE),
         ("INNERGRID",(0,0),(-1,-1),0.35,LINE),
         ("VALIGN",(0,0),(-1,-1),"TOP"),
+        ("LEFTPADDING",(0,0),(-1,-1),9),
+        ("RIGHTPADDING",(0,0),(-1,-1),9),
+        ("TOPPADDING",(0,0),(-1,-1),5),
+        ("BOTTOMPADDING",(0,0),(-1,-1),5),
+    ]))
+    story.append(learner_table)
+    story.append(par("All Exam Questions", "RSection"))
+    story.append(par(f"Checked: {checked_count} / {len(all_ids)} questions.  "
+                     "A check mark means the learner submitted an answer for checking.", "RSmall"))
+    # Each row displays four question IDs. Colors mark attempted items; unchecked
+    # boxes remain neutral. Use text glyphs compatible with registered Korean fonts.
+    num_cols = 4
+    cell_rows = []
+    for offset in range(0, len(all_ids), num_cols):
+        group = all_ids[offset:offset + num_cols]
+        row = []
+        for qid in group:
+            row.append(ChecklistItem(qid, qid in checked_ids))
+        row.extend([""] * (num_cols-len(row)))
+        cell_rows.append(row)
+    checklist = Table(cell_rows, colWidths=[content_width / num_cols] * num_cols, hAlign="LEFT")
+    checklist.setStyle(TableStyle([
+        ("BOX",(0,0),(-1,-1),0.7,LINE),
+        ("INNERGRID",(0,0),(-1,-1),0.35,LINE),
+        ("ROWBACKGROUNDS",(0,0),(-1,-1),[WHITE,LIGHT]),
+        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
         ("LEFTPADDING",(0,0),(-1,-1),10),
-        ("RIGHTPADDING",(0,0),(-1,-1),10),
+        ("RIGHTPADDING",(0,0),(-1,-1),5),
         ("TOPPADDING",(0,0),(-1,-1),7),
         ("BOTTOMPADDING",(0,0),(-1,-1),7),
     ]))
-    story.append(learner_table)
-
+    story.append(checklist)
+    story.append(Spacer(1, 10))
+    story.append(par("Green check: submitted/checked. Empty box: not checked. "
+                     "Saved drafts are not marked complete.", "RSmall"))
+    # A hard page break guarantees that detailed answer records start on page 2.
+    story.append(PageBreak())
+    story.append(par("ENGLISH TEACHER EXAM", "RSmall"))
+    story.append(par("Answer & Feedback Details", "RTitle"))
+    story.append(par("Answers, grading outcomes and recorded time for this session.", "RSubtitle"))
     story.append(par("Practice Overview", "RSection"))
     overview = Table([
         [par("Questions", "RSmall"), par("Exam years", "RSmall"), par("Correct", "RSmall"), par("Review required", "RSmall")],
@@ -327,10 +400,9 @@ def report_pdf(sid, name):
     ]))
     story.append(overview)
     story.append(Spacer(1, 8))
-    legend_cells = []
-    for status in ("Correct", "Review required", "Not answered", "Incorrect"):
-        legend_cells.append(par(status, "RSmall"))
-    legend = Table([legend_cells], colWidths=[content_width/4]*4)
+    legend = Table([[par(status,"RSmall") for status in
+                    ("Correct", "Review required", "Not answered", "Incorrect")]],
+                   colWidths=[content_width/4]*4)
     legend.setStyle(TableStyle([
         ("TEXTCOLOR",(0,0),(0,0),GREEN),
         ("TEXTCOLOR",(1,0),(1,0),BLUE),

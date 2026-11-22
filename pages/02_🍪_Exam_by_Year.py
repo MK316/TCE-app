@@ -45,7 +45,7 @@ if not available_years:
 # Year selection only
 # ------------------------------------------
 selected_year = st.selectbox(
-    "Select Exam Year",
+    "Select Exam Year (2026~2010)",
     available_years
 )
 

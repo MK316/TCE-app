@@ -14,7 +14,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🍪 English Teacher Certification Exam")
+st.title("🍪 English Teacher Certification Exam (2026~2010")
 st.caption("Select an exam year and practice the questions.")
 
 # ------------------------------------------

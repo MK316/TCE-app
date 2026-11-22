@@ -1,0 +1,2123 @@
+[
+  {
+    "label": "2009-1",
+    "year": "2009",
+    "original": "원문 31번",
+    "points": "객관식",
+    "intro": "①~⑤ 중 가장 적절한 답 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Answer · ①–⑤",
+        "type": "text",
+        "placeholder": "Enter one choice (1–5)"
+      }
+    ],
+    "images": [
+      "images/2009-1a.png",
+      "images/2009-1b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "Selected choice",
+        "accepted": [
+          {
+            "a": "②"
+          },
+          {
+            "a": "2"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "Selected choice",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2009-2",
+    "year": "2009",
+    "original": "원문 34번",
+    "points": "2.5 points",
+    "intro": "이 문항은 현재 문제 원문의 앞부분만 제공되었습니다. 나머지 지문과 최종 지시문·보기를 추가하면 답안 입력 및 채점 기능을 활성화합니다.",
+    "fields": [],
+    "images": [
+      "images/2009-2a.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": true,
+    "grade_cases": [],
+    "grade_labels": []
+  },
+  {
+    "label": "2010-1",
+    "year": "2010",
+    "original": "원문 30번",
+    "points": "객관식",
+    "intro": "①~⑤ 중 가장 적절한 답 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Answer · ①–⑤",
+        "type": "text",
+        "placeholder": "Enter one choice (1–5)"
+      }
+    ],
+    "images": [
+      "images/2010-1a.png",
+      "images/2010-1b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "Selected choice",
+        "accepted": [
+          {
+            "a": "④"
+          },
+          {
+            "a": "4"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "Selected choice",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2010-2",
+    "year": "2010",
+    "original": "원문 33번",
+    "points": "2.5 points",
+    "intro": "(1)과 (2)의 분류에 맞는 답을 ①~⑤ 중에서 하나 선택하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Answer · ①–⑤",
+        "type": "text",
+        "placeholder": "Enter one choice (1–5)"
+      }
+    ],
+    "images": [
+      "images/2010-2a.png",
+      "images/2010-2b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "Selected choice",
+        "accepted": [
+          {
+            "a": "⑤"
+          },
+          {
+            "a": "5"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "Selected choice",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2011-1",
+    "year": "2011",
+    "original": "원문 33번",
+    "points": "객관식",
+    "intro": "문제의 ①~⑤ 중 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Answer · ①–⑤",
+        "type": "text",
+        "placeholder": "Enter one choice (1–5)"
+      }
+    ],
+    "images": [
+      "images/2011-1.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "Selected choice",
+        "accepted": [
+          {
+            "a": "②"
+          },
+          {
+            "a": "2"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "Selected choice",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2011-2",
+    "year": "2011",
+    "original": "원문 35번",
+    "points": "선택형",
+    "intro": "<B>의 a~d 중 올바른 설명을 모두 선택하세요. 선택한 문자를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "All correct statements · a / b / c / d",
+        "type": "text",
+        "placeholder": "Enter letters separated by commas"
+      }
+    ],
+    "images": [
+      "images/2011-2a.png",
+      "images/2011-2b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "Selected statements",
+        "accepted": [
+          {
+            "a": "a,c,d"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "Selected statements",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2012-1",
+    "year": "2012",
+    "original": "원문 29번",
+    "points": "객관식",
+    "intro": "원문의 ①~⑤ 중 하나를 선택하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Select ONE answer (①–⑤)",
+        "type": "choice",
+        "placeholder": "Select one option"
+      }
+    ],
+    "images": [
+      "images/2012-1a.png",
+      "images/2012-1b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "ONE answer",
+        "accepted": [
+          {
+            "a": "⑤"
+          },
+          {
+            "a": "5"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "ONE answer",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2012-2",
+    "year": "2012",
+    "original": "원문 30번",
+    "points": "객관식",
+    "intro": "원문의 ①~⑤ 중 하나를 선택하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Select ONE answer (①–⑤)",
+        "type": "choice",
+        "placeholder": "Select one option"
+      }
+    ],
+    "images": [
+      "images/2012-2a.png",
+      "images/2012-2b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "ONE answer",
+        "accepted": [
+          {
+            "a": "④"
+          },
+          {
+            "a": "4"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "ONE answer",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2012-3",
+    "year": "2012",
+    "original": "원문 36번",
+    "points": "객관식",
+    "intro": "원문의 ①~⑤ 중 하나를 선택하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Select ONE answer (①–⑤)",
+        "type": "choice",
+        "placeholder": "Select one option"
+      }
+    ],
+    "images": [
+      "images/2012-3a.png",
+      "images/2012-3b.png",
+      "images/2012-3c.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "ONE answer",
+        "accepted": [
+          {
+            "a": "④"
+          },
+          {
+            "a": "4"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "ONE answer",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2013-1",
+    "year": "2013",
+    "original": "원문 29번",
+    "points": "객관식",
+    "intro": "문제의 ①~⑤ 중 하나를 선택하여 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Answer · ①–⑤",
+        "type": "text",
+        "placeholder": "Enter one choice (1–5)"
+      }
+    ],
+    "images": [
+      "images/2013-1.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "Selected choice",
+        "accepted": [
+          {
+            "a": "②"
+          },
+          {
+            "a": "2"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "Selected choice",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2013-2",
+    "year": "2013",
+    "original": "원문 30번",
+    "points": "2.5 points",
+    "intro": "문제의 ①~⑤ 중 하나를 선택하여 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Answer · ①–⑤",
+        "type": "text",
+        "placeholder": "Enter one choice (1–5)"
+      }
+    ],
+    "images": [
+      "images/2013-2a.png",
+      "images/2013-2b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "Selected choice",
+        "accepted": [
+          {
+            "a": "④"
+          },
+          {
+            "a": "4"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "Selected choice",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2014-1",
+    "year": "2014",
+    "original": "원문 11번",
+    "points": "2 points",
+    "intro": "빈칸에 가장 적절한 영어 단어 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "ONE word",
+        "type": "text",
+        "placeholder": "Enter one word"
+      }
+    ],
+    "images": [
+      "images/2014-1.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "ONE word",
+        "accepted": [
+          {
+            "a": "rhyme"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "ONE word",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2014-2",
+    "year": "2014",
+    "original": "원문 5번",
+    "points": "4 points",
+    "intro": "Requirement 2와 Requirement 3를 각각 영어로 서술하세요. 각 requirement에는 제시된 distinctive feature를 ONE or TWO개 사용하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Requirement 2 · English",
+        "type": "textarea",
+        "placeholder": "Describe Requirement 2 using one or two distinctive features."
+      },
+      {
+        "id": "b",
+        "label": "Requirement 3 · English",
+        "type": "textarea",
+        "placeholder": "Describe Requirement 3 using one or two distinctive features."
+      }
+    ],
+    "images": [
+      "images/2014-2a.png",
+      "images/2014-2b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [],
+    "grade_labels": [
+      {
+        "label": "Requirement 2",
+        "review": true
+      },
+      {
+        "label": "Requirement 3",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2015-1",
+    "year": "2015",
+    "original": "원문 7번",
+    "points": "2 points",
+    "intro": "①과 ②에 들어갈 영어 단어를 순서대로 각각 하나씩 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "① ONE word",
+        "type": "text",
+        "placeholder": "ONE word"
+      },
+      {
+        "id": "b",
+        "label": "② ONE word",
+        "type": "text",
+        "placeholder": "ONE word"
+      }
+    ],
+    "images": [
+      "images/2015-1.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "①",
+        "accepted": [
+          {
+            "a": "allophone"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "label": "②",
+        "accepted": [
+          {
+            "b": "onset"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "①",
+        "review": false
+      },
+      {
+        "label": "②",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2015-2",
+    "year": "2015",
+    "original": "원문 3번",
+    "points": "5 points",
+    "intro": "지시문에 따라 American English에서 /j/가 올 수 없는 조건과 올 수 있는 조건을 각각 영어로 서술하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "When /j/ cannot follow alveolar consonants · English",
+        "type": "textarea",
+        "placeholder": "State the condition(s) in English."
+      },
+      {
+        "id": "b",
+        "label": "When /j/ can follow alveolar consonants · English",
+        "type": "textarea",
+        "placeholder": "State the condition(s) in English."
+      }
+    ],
+    "images": [
+      "images/2015-2a.png",
+      "images/2015-2b.png",
+      "images/2015-2c.png"
+    ],
+    "extraInstruction": "Q. Based on the data given in (1b), (2b), and (3), state the condition(s) when /j/ cannot follow alveolar consonants and the condition(s) when /j/ can in American English.",
+    "incomplete": false,
+    "grade_cases": [],
+    "grade_labels": [
+      {
+        "label": "Cannot follow",
+        "review": true
+      },
+      {
+        "label": "Can follow",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2016-1",
+    "year": "2016",
+    "original": "원문 2번",
+    "points": "4 points",
+    "intro": "<B>에서 밑줄 친 규칙으로 설명되지 않는 단어를 모두 찾고, 두 집단으로 나눈 뒤 각 집단에 적용되는 규칙을 영어로 작성하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Words in Group 1",
+        "type": "text",
+        "placeholder": "Enter the words"
+      },
+      {
+        "id": "b",
+        "label": "Rule for Group 1 · English",
+        "type": "textarea",
+        "placeholder": "State one rule for the first group."
+      },
+      {
+        "id": "c",
+        "label": "Words in Group 2",
+        "type": "text",
+        "placeholder": "Enter the words"
+      },
+      {
+        "id": "d",
+        "label": "Rule for Group 2 · English",
+        "type": "textarea",
+        "placeholder": "State one rule for the second group."
+      }
+    ],
+    "images": [
+      "images/2016-1.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [],
+    "grade_labels": [
+      {
+        "label": "Group 1 and its rule",
+        "review": true
+      },
+      {
+        "label": "Group 2 and its rule",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2016-2",
+    "year": "2016",
+    "original": "원문 5번",
+    "points": "2 points",
+    "intro": "문제의 빈칸에 가장 적절한 변별자질을 부호와 함께 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Distinctive feature and value",
+        "type": "text",
+        "placeholder": "[+feature] or [-feature]"
+      }
+    ],
+    "images": [
+      "images/2016-2.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "Distinctive feature",
+        "accepted": [
+          {
+            "a": "[+coronal]"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "Distinctive feature",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2016-3",
+    "year": "2016",
+    "original": "원문 6번",
+    "points": "2 points",
+    "intro": "①과 ②의 빈칸에 각각 가장 적절한 영어 용어를 순서대로 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "① ONE term",
+        "type": "text",
+        "placeholder": "Enter the term"
+      },
+      {
+        "id": "b",
+        "label": "② ONE term",
+        "type": "text",
+        "placeholder": "Enter the term"
+      }
+    ],
+    "images": [
+      "images/2016-3.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "①",
+        "accepted": [
+          {
+            "a": "stress-shifting"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "label": "②",
+        "accepted": [
+          {
+            "b": "stress-neutral"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "①",
+        "review": false
+      },
+      {
+        "label": "②",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2017-1",
+    "year": "2017",
+    "original": "원문 3번",
+    "points": "2 points",
+    "intro": "원문 빈칸에 들어갈 영어 단어 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "ONE word",
+        "type": "text",
+        "placeholder": "Enter one word"
+      }
+    ],
+    "images": [
+      "images/2017-1.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "ONE word",
+        "accepted": [
+          {
+            "a": "velars"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "ONE word",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2017-2",
+    "year": "2017",
+    "original": "원문 4번",
+    "points": "2 points",
+    "intro": "원문의 빈칸에 들어갈 영어 단어 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "ONE word",
+        "type": "text",
+        "placeholder": "Enter one word"
+      }
+    ],
+    "images": [
+      "images/2017-2.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "ONE word",
+        "accepted": [
+          {
+            "a": "suffixes"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "ONE word",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2017-3",
+    "year": "2017",
+    "original": "원문 3번",
+    "points": "4 points",
+    "intro": "현재 제공된 원문 이미지가 문항 중간에서 끝납니다. 뒷부분과 지시문이 확보되기 전까지 채점하지 않습니다.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Notes · English (optional)",
+        "type": "textarea",
+        "placeholder": "Use this area for your own notes until the remaining question is uploaded."
+      }
+    ],
+    "images": [
+      "images/2017-3.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [],
+    "grade_labels": [
+      {
+        "label": "2017-3: 아직 채점할 수 없는 문항",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2018-1",
+    "year": "2018",
+    "original": "원문 4번",
+    "points": "2 points",
+    "intro": "원문 빈칸에 들어갈 영어 단어 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "ONE word",
+        "type": "text",
+        "placeholder": "Enter one word"
+      }
+    ],
+    "images": [
+      "images/2018-1a.png",
+      "images/2018-1b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "ONE word",
+        "accepted": [
+          {
+            "a": "onset"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "ONE word",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2018-2",
+    "year": "2018",
+    "original": "원문 5번",
+    "points": "2 points",
+    "intro": "원문의 두 빈칸에 각각 가장 적절한 영어 단어 하나를 순서대로 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "① ONE word",
+        "type": "text",
+        "placeholder": "Enter one word"
+      },
+      {
+        "id": "b",
+        "label": "② ONE word",
+        "type": "text",
+        "placeholder": "Enter one word"
+      }
+    ],
+    "images": [
+      "images/2018-2.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "①",
+        "accepted": [
+          {
+            "a": "sonorants"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "label": "②",
+        "accepted": [
+          {
+            "b": "obstruents"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "①",
+        "review": false
+      },
+      {
+        "label": "②",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2018-3",
+    "year": "2018",
+    "original": "원문 1번",
+    "points": "4 points",
+    "intro": "Glide insertion의 하나의 일반화를 쓰고 /j/와 /w/ 삽입 조건을 각각 영어로 서술하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Generalization · English",
+        "type": "textarea",
+        "placeholder": "State one generalization for glide insertion."
+      },
+      {
+        "id": "b",
+        "label": "/j/ insertion · English",
+        "type": "textarea",
+        "placeholder": "State the environment(s) for /j/ insertion."
+      },
+      {
+        "id": "c",
+        "label": "/w/ insertion · English",
+        "type": "textarea",
+        "placeholder": "State the environment(s) for /w/ insertion."
+      }
+    ],
+    "images": [
+      "images/2018-3.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [],
+    "grade_labels": [
+      {
+        "label": "Generalization",
+        "review": true
+      },
+      {
+        "label": "/j/ insertion",
+        "review": true
+      },
+      {
+        "label": "/w/ insertion",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2019-1",
+    "year": "2019",
+    "original": "원문 4번",
+    "points": "2 points",
+    "intro": "①과 ②에 가장 적절한 영어 단어를 각각 하나씩 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "① ONE word",
+        "type": "text",
+        "placeholder": "ONE word"
+      },
+      {
+        "id": "b",
+        "label": "② ONE word",
+        "type": "text",
+        "placeholder": "ONE word"
+      }
+    ],
+    "images": [
+      "images/2019-1.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "①",
+        "accepted": [
+          {
+            "a": "stressed"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "label": "②",
+        "accepted": [
+          {
+            "b": "unstressed"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "①",
+        "review": false
+      },
+      {
+        "label": "②",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2019-2",
+    "year": "2019",
+    "original": "원문 5번",
+    "points": "2 points",
+    "intro": "원문의 빈칸에 적절한 IPA 기호를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "IPA symbol",
+        "type": "text",
+        "placeholder": "Enter the IPA symbol"
+      }
+    ],
+    "images": [
+      "images/2019-2.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "IPA symbol",
+        "accepted": [
+          {
+            "a": "/æ/"
+          },
+          {
+            "a": "æ"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "IPA symbol",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2019-3",
+    "year": "2019",
+    "original": "원문 2번",
+    "points": "4 points",
+    "intro": "원문 지시문에 따라 네 환경을 각각 영어로 서술하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Dark “l” · English",
+        "type": "textarea",
+        "placeholder": "State the environment in English."
+      },
+      {
+        "id": "b",
+        "label": "Darker “l” · English",
+        "type": "textarea",
+        "placeholder": "State the environment in English."
+      },
+      {
+        "id": "c",
+        "label": "Vocalization of /l/ · English",
+        "type": "textarea",
+        "placeholder": "State the environment in English."
+      },
+      {
+        "id": "d",
+        "label": "Deletion of /l/ · English",
+        "type": "textarea",
+        "placeholder": "State the environment in English."
+      }
+    ],
+    "images": [
+      "images/2019-3a.png",
+      "images/2019-3b.png"
+    ],
+    "extraInstruction": "Based on the data given in (1a)-(1b), state the environment(s) for dark ‘l,’  and darker ‘l’, respectively, in some AE varieties. Then, based on the data given in (2a)-(2b), state the environment(s) for the vocalization of /l/ and the deletion of /l/, respectively, in AAVE.",
+    "incomplete": false,
+    "grade_cases": [],
+    "grade_labels": [
+      {
+        "label": "Dark “l”",
+        "review": true
+      },
+      {
+        "label": "Darker “l”",
+        "review": true
+      },
+      {
+        "label": "Vocalization",
+        "review": true
+      },
+      {
+        "label": "Deletion",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2020-1",
+    "year": "2020",
+    "original": "원문 4번",
+    "points": "2 points",
+    "intro": "원문의 빈칸에 가장 적절한 영어 단어 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "ONE word",
+        "type": "text",
+        "placeholder": "Enter one word"
+      }
+    ],
+    "images": [
+      "images/2020-1a.png",
+      "images/2020-1b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "ONE word",
+        "accepted": [
+          {
+            "a": "affricate"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "ONE word",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2020-2",
+    "year": "2020",
+    "original": "원문 7번",
+    "points": "4 points",
+    "intro": "(i)와 (ii)에 해당하는 현상 또는 음운 규칙을 각각 쓰고, 적용 양상을 영어로 설명하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "(i) Phenomenon or sound rule",
+        "type": "text",
+        "placeholder": "Enter the name of the process"
+      },
+      {
+        "id": "b",
+        "label": "(i) Explanation · English",
+        "type": "textarea",
+        "placeholder": "Explain its application to the given words."
+      },
+      {
+        "id": "c",
+        "label": "(ii) Phenomenon or sound rule",
+        "type": "text",
+        "placeholder": "Enter the name of the process"
+      },
+      {
+        "id": "d",
+        "label": "(ii) Explanation · English",
+        "type": "textarea",
+        "placeholder": "Explain its application to the given word."
+      }
+    ],
+    "images": [
+      "images/2020-2a.png",
+      "images/2020-2b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [],
+    "grade_labels": [
+      {
+        "label": "(i) Process",
+        "review": false
+      },
+      {
+        "label": "(i) Explanation",
+        "review": true
+      },
+      {
+        "label": "(ii) Process",
+        "review": false
+      },
+      {
+        "label": "(ii) Explanation",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2020-3",
+    "year": "2020",
+    "original": "원문 3번",
+    "points": "4 points",
+    "intro": "(1)과 (2)에 나타나는 음운 과정을 순서대로 쓰고, [-/+lateral]을 사용해 -al/-ar의 분포를 영어로 일반화하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "(1) Phonological process",
+        "type": "text",
+        "placeholder": "Enter the name of the process"
+      },
+      {
+        "id": "b",
+        "label": "(2) Phonological process",
+        "type": "text",
+        "placeholder": "Enter the name of the process"
+      },
+      {
+        "id": "c",
+        "label": "Generalization · English",
+        "type": "textarea",
+        "placeholder": "Use [+lateral] and [-lateral] in your answer."
+      }
+    ],
+    "images": [
+      "images/2020-3a.png",
+      "images/2020-3b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "(1) Process",
+        "accepted": [
+          {
+            "a": "Assimilation"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "label": "(2) Process",
+        "accepted": [
+          {
+            "b": "Dissimilation"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "(1) Process",
+        "review": false
+      },
+      {
+        "label": "(2) Process",
+        "review": false
+      },
+      {
+        "label": "Generalization",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2021-1",
+    "year": "2021",
+    "original": "원문 6번",
+    "points": "4 points",
+    "intro": "<B>에서 약모음 [ə]가 탈락할 수 있는 두 단어를 선택하고, 빠른 발화에서 선호되는 foot 구조를 영어로 설명하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "TWO choices · a / b / c / d",
+        "type": "text",
+        "placeholder": "Enter two letters"
+      },
+      {
+        "id": "b",
+        "label": "Foot structure · English",
+        "type": "textarea",
+        "placeholder": "Describe the preferred foot structure in fast speech."
+      }
+    ],
+    "images": [
+      "images/2021-1a.png",
+      "images/2021-1b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "TWO choices",
+        "accepted": [
+          {
+            "a": "b,c"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "TWO choices",
+        "review": false
+      },
+      {
+        "label": "Foot structure",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2021-2",
+    "year": "2021",
+    "original": "원문 4번",
+    "points": "4 points",
+    "intro": "<B>에서 밑줄 친 /oʊ/가 [o]로 실현되는 두 단어를 선택하고, <A>의 일반화를 영어로 수정하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "TWO choices · a / b / c / d",
+        "type": "text",
+        "placeholder": "Enter two letters"
+      },
+      {
+        "id": "b",
+        "label": "Revised generalization · English",
+        "type": "textarea",
+        "placeholder": "State the phonological and morphological condition."
+      }
+    ],
+    "images": [
+      "images/2021-2a.png",
+      "images/2021-2b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "TWO choices",
+        "accepted": [
+          {
+            "a": "b,d"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "TWO choices",
+        "review": false
+      },
+      {
+        "label": "Revised generalization",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2022-1",
+    "year": "2022",
+    "original": "원문 4번",
+    "points": "2 points",
+    "intro": "원문의 빈칸에 들어갈 영어 단어 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "ONE word",
+        "type": "text",
+        "placeholder": "Enter one word"
+      }
+    ],
+    "images": [
+      "images/2022-1.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "ONE word",
+        "accepted": [
+          {
+            "a": "coronal"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "ONE word",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2022-2",
+    "year": "2022",
+    "original": "원문 6번",
+    "points": "4 points",
+    "intro": "<B>에서 기식음으로 실현되는 단어 두 개를 선택하고, foot을 포함하여 영어로 규칙을 서술하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "TWO choices · a / b / c / d",
+        "type": "text",
+        "placeholder": "Enter two letters"
+      },
+      {
+        "id": "b",
+        "label": "Rule · English",
+        "type": "textarea",
+        "placeholder": "State the rule using the term “foot”."
+      }
+    ],
+    "images": [
+      "images/2022-2a.png",
+      "images/2022-2b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "TWO choices",
+        "accepted": [
+          {
+            "a": "b,c"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "TWO choices",
+        "review": false
+      },
+      {
+        "label": "Rule",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2022-3",
+    "year": "2022",
+    "original": "원문 4번",
+    "points": "4 points",
+    "intro": "<B>의 두 빈칸에 변별자질을 각각 기입하고, 마지막 지시문에 영어로 답하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "a. Distinctive feature and value",
+        "type": "text",
+        "placeholder": "e.g., [+feature]"
+      },
+      {
+        "id": "b",
+        "label": "b. Distinctive feature and value",
+        "type": "text",
+        "placeholder": "e.g., [-feature]"
+      },
+      {
+        "id": "c",
+        "label": "Explanation · English",
+        "type": "textarea",
+        "placeholder": "Identify the consonant and explain why."
+      }
+    ],
+    "images": [
+      "images/2022-3a.png",
+      "images/2022-3b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "a",
+        "accepted": [
+          {
+            "a": "[-sonorant]"
+          },
+          {
+            "a": "-sonorant"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "label": "b",
+        "accepted": [
+          {
+            "b": "[+consonantal]"
+          },
+          {
+            "b": "+consonantal"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "a",
+        "review": false
+      },
+      {
+        "label": "b",
+        "review": false
+      },
+      {
+        "label": "Explanation",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2023-1",
+    "year": "2023",
+    "original": "원문 2번",
+    "points": "2 points",
+    "intro": "<B>의 빈칸에 들어갈 변별자질 하나와 부호(+ 또는 −)를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "Distinctive feature and value",
+        "type": "text",
+        "placeholder": "[+feature] or [-feature]"
+      }
+    ],
+    "images": [
+      "images/2023-1.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "Distinctive feature",
+        "accepted": [
+          {
+            "a": "[-sonorant]"
+          },
+          {
+            "a": "-sonorant"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "Distinctive feature",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2023-2",
+    "year": "2023",
+    "original": "원문 6번",
+    "points": "4 points",
+    "intro": "<B>에서 낮은 평점을 받을 가능성이 큰 무의미 단어 두 개를 선택한 뒤, 음운 일반화를 영어로 설명하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "TWO choices · a / b / c / d",
+        "type": "text",
+        "placeholder": "Enter two letters"
+      },
+      {
+        "id": "b",
+        "label": "Phonological generalization · English",
+        "type": "textarea",
+        "placeholder": "Explain the generalization in English."
+      }
+    ],
+    "images": [
+      "images/2023-2a.png",
+      "images/2023-2b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "TWO choices",
+        "accepted": [
+          {
+            "a": "b,d"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "TWO choices",
+        "review": false
+      },
+      {
+        "label": "Phonological generalization",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2023-3",
+    "year": "2023",
+    "original": "원문 4번",
+    "points": "4 points",
+    "intro": "<B>의 ①과 ②에 각각 영어 단어 하나를 쓰고, 명사형 접사 -al이 결합할 수 있는 동사 어간의 음운 조건을 영어로 설명하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "① ONE word",
+        "type": "text",
+        "placeholder": "ONE word"
+      },
+      {
+        "id": "b",
+        "label": "② ONE word",
+        "type": "text",
+        "placeholder": "ONE word"
+      },
+      {
+        "id": "c",
+        "label": "Phonological generalization · English",
+        "type": "textarea",
+        "placeholder": "Explain which verb stems can take noun-forming -al."
+      }
+    ],
+    "images": [
+      "images/2023-3a.png",
+      "images/2023-3b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "①",
+        "accepted": [
+          {
+            "a": "penultimate"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "label": "②",
+        "accepted": [
+          {
+            "b": "trochaic"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "①",
+        "review": false
+      },
+      {
+        "label": "②",
+        "review": false
+      },
+      {
+        "label": "Phonological generalization",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2024-1",
+    "year": "2024",
+    "original": "원문 4번",
+    "points": "2 points",
+    "intro": "빈칸에 가장 적절한 영어 단어 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "빈칸 · ONE word",
+        "type": "text",
+        "placeholder": "정답 단어"
+      }
+    ],
+    "images": [
+      "images/2024-1.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "빈칸",
+        "accepted": [
+          {
+            "a": "allomorphs"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "빈칸",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2024-2",
+    "year": "2024",
+    "original": "원문 6번",
+    "points": "4 points",
+    "intro": "해당되는 두 구를 고르고, stress-shift가 일어나기 위한 추가 음운 조건을 영어로 적으세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "해당되는 TWO phrases",
+        "type": "text",
+        "placeholder": "두 보기의 문자를 입력하세요"
+      },
+      {
+        "id": "b",
+        "label": "추가 음운 조건 · English",
+        "type": "textarea",
+        "placeholder": "Describe an additional phonological condition for stress-shift."
+      }
+    ],
+    "images": [
+      "images/2024-2a.png",
+      "images/2024-2b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "TWO phrases",
+        "accepted": [
+          {
+            "a": "b,c"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "TWO phrases",
+        "review": false
+      },
+      {
+        "label": "추가 조건",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2024-3",
+    "year": "2024",
+    "original": "원문 4번",
+    "points": "4 points",
+    "intro": "해당되는 두 단어를 고르고, word-medial /ɹ/ deletion이 일어나는 음운 조건을 영어로 적으세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "해당되는 TWO words",
+        "type": "text",
+        "placeholder": "두 보기의 문자를 입력하세요"
+      },
+      {
+        "id": "b",
+        "label": "word-medial /ɹ/-deletion의 조건 · English",
+        "type": "textarea",
+        "placeholder": "State the phonological conditions for word-medial /ɹ/-deletion."
+      }
+    ],
+    "images": [
+      "images/2024-3a.png",
+      "images/2024-3b.png"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "TWO words",
+        "accepted": [
+          {
+            "a": "a,c"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "TWO words",
+        "review": false
+      },
+      {
+        "label": "조건 서술",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2025-1",
+    "year": "2025",
+    "original": "원문 6번",
+    "points": "4 points",
+    "intro": "<B>에서 -er을 붙일 수 있는 형용사 두 개를 선택하고, 허용되는 2음절 형용사와 허용되지 않는 2음절 형용사의 음운 조건을 영어로 설명하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "첫 번째 선택 · a / b / c / d",
+        "type": "text",
+        "placeholder": "a, b, c, or d"
+      },
+      {
+        "id": "b",
+        "label": "두 번째 선택 · a / b / c / d",
+        "type": "text",
+        "placeholder": "a, b, c, or d"
+      },
+      {
+        "id": "c",
+        "label": "Attested disyllabic adjectives · phonological condition",
+        "type": "textarea",
+        "placeholder": "Explain the phonological condition in English."
+      },
+      {
+        "id": "d",
+        "label": "Unattested disyllabic adjectives · phonological condition",
+        "type": "textarea",
+        "placeholder": "Explain the phonological condition in English."
+      }
+    ],
+    "images": [
+      "images/2025-1.webp"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "선택한 두 형용사",
+        "accepted": [
+          {
+            "a": "b",
+            "b": "d"
+          },
+          {
+            "a": "d",
+            "b": "b"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "선택한 두 형용사",
+        "review": false
+      },
+      {
+        "label": "음운 조건 서술",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2025-2",
+    "year": "2025",
+    "original": "원문 4번",
+    "points": "4 points",
+    "intro": "<B>에서 The Name Game에 사용할 수 없는 이름 두 개를 고르고, 사용할 수 있는 이름의 운율 조건을 영어로 설명하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "첫 번째 선택 · a / b / c / d",
+        "type": "text",
+        "placeholder": "a, b, c, or d"
+      },
+      {
+        "id": "b",
+        "label": "두 번째 선택 · a / b / c / d",
+        "type": "text",
+        "placeholder": "a, b, c, or d"
+      },
+      {
+        "id": "c",
+        "label": "Prosodic condition · English",
+        "type": "textarea",
+        "placeholder": "Describe the necessary stress pattern and syllable length."
+      }
+    ],
+    "images": [
+      "images/2025-2.webp"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "선택한 두 이름",
+        "accepted": [
+          {
+            "a": "a",
+            "b": "b"
+          },
+          {
+            "a": "b",
+            "b": "a"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "선택한 두 이름",
+        "review": false
+      },
+      {
+        "label": "운율 조건 서술",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2026-1",
+    "year": "2026",
+    "original": "원문 4번",
+    "points": "2 points",
+    "intro": "빈칸에 가장 적절한 영어 단어 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "빈칸 · ONE word",
+        "type": "text",
+        "placeholder": "정답 단어"
+      }
+    ],
+    "images": [
+      "images/2026-1.webp"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "빈칸",
+        "accepted": [
+          {
+            "a": "geminates"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "빈칸",
+        "review": false
+      }
+    ]
+  },
+  {
+    "label": "2026-2",
+    "year": "2026",
+    "original": "원문 6번",
+    "points": "4 points",
+    "intro": "①과 ②에는 변별자질과 부호(+/−)를 쓰고, (4)의 패턴을 영어로 간략히 일반화하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "① 변별자질과 값",
+        "type": "text",
+        "placeholder": "예: [-anterior]"
+      },
+      {
+        "id": "b",
+        "label": "② 변별자질과 값",
+        "type": "text",
+        "placeholder": "예: [+anterior]"
+      },
+      {
+        "id": "c",
+        "label": "(4) 패턴 일반화 · English",
+        "type": "textarea",
+        "placeholder": "Describe the environment in which /j/ is lost in (4)."
+      }
+    ],
+    "images": [
+      "images/2026-2.webp"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "①",
+        "accepted": [
+          {
+            "a": "[-anterior]"
+          },
+          {
+            "a": "-anterior"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "label": "②",
+        "accepted": [
+          {
+            "b": "[+anterior]"
+          },
+          {
+            "b": "+anterior"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "①",
+        "review": false
+      },
+      {
+        "label": "②",
+        "review": false
+      },
+      {
+        "label": "(4) 일반화",
+        "review": true
+      }
+    ]
+  },
+  {
+    "label": "2026-3",
+    "year": "2026",
+    "original": "원문 1번",
+    "points": "2 points",
+    "intro": "①과 ②에 각각 가장 적절한 영어 단어 하나를 입력하세요.",
+    "fields": [
+      {
+        "id": "a",
+        "label": "① Grammatical ______ of the stem",
+        "type": "text",
+        "placeholder": "ONE word"
+      },
+      {
+        "id": "b",
+        "label": "② The ______ of an inflectional suffix",
+        "type": "text",
+        "placeholder": "ONE word"
+      }
+    ],
+    "images": [
+      "images/2026-3.webp"
+    ],
+    "extraInstruction": "",
+    "incomplete": false,
+    "grade_cases": [
+      {
+        "index": 0,
+        "label": "①",
+        "accepted": [
+          {
+            "a": "category"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "label": "②",
+        "accepted": [
+          {
+            "b": "meaning"
+          }
+        ]
+      }
+    ],
+    "grade_labels": [
+      {
+        "label": "①",
+        "review": false
+      },
+      {
+        "label": "②",
+        "review": false
+      }
+    ]
+  }
+]

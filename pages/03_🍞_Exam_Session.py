@@ -1,6 +1,6 @@
-"""Exam Practice Session: resumable SQLite study log and downloadable PDF.
-Install: copy to pages/Exam_Session.py and copy exam_manifest.json to project root.
-Requires: pip install reportlab
+"""Exam Practice Session: persistent Supabase study log and downloadable PDF.
+Requires: pip install streamlit reportlab supabase
+Supabase Secrets: SUPABASE_URL, SUPABASE_SECRET_KEY (server side only).
 """
 import hashlib
 import hmac
@@ -8,14 +8,14 @@ import io
 import json
 import os
 import re
-import sqlite3
 import time
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
 
 import streamlit as st
+from supabase import create_client
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -27,7 +27,6 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "exam_manifest.json"
-DB_PATH = Path(os.environ.get("EXAM_SESSION_DB", str(ROOT / "exam_sessions.sqlite3")))
 
 st.set_page_config(page_title="Study Session Report", page_icon="📋", layout="wide")
 st.title("Study Session & PDF Report")
@@ -37,65 +36,147 @@ if not MANIFEST.exists():
     st.error("exam_manifest.json 파일이 없습니다. 프로젝트 최상위 폴더에 추가하세요.")
     st.stop()
 
+if not all(k in st.secrets for k in ("SUPABASE_URL", "SUPABASE_SECRET_KEY")):
+    st.error("Supabase 설정이 없습니다. Streamlit Secrets에 SUPABASE_URL과 SUPABASE_SECRET_KEY를 등록하세요.")
+    st.stop()
+
 QUESTIONS = {q["label"]: q for q in json.loads(MANIFEST.read_text(encoding="utf-8"))}
 VALID_IDS = {q_id for q_id, q in QUESTIONS.items() if not q.get("incomplete")}
 
 
-def connection():
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    con = sqlite3.connect(str(DB_PATH), timeout=20)
-    con.row_factory = sqlite3.Row
-    con.execute("PRAGMA journal_mode=WAL")
-    con.execute("CREATE TABLE IF NOT EXISTS users (name TEXT PRIMARY KEY, salt TEXT NOT NULL, pin_hash TEXT NOT NULL)")
-    con.execute("CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, name TEXT NOT NULL, created_at TEXT NOT NULL, status TEXT NOT NULL, finished_at TEXT)")
-    con.execute("CREATE TABLE IF NOT EXISTS attempts (session_id TEXT NOT NULL, question_id TEXT NOT NULL, answers TEXT NOT NULL DEFAULT '{}', feedback TEXT NOT NULL DEFAULT '[]', seconds REAL NOT NULL DEFAULT 0, checked_at TEXT, PRIMARY KEY(session_id, question_id))")
-    con.commit()
-    return con
+@st.cache_resource
+def get_supabase():
+    """Server-only client. Never expose the secret key to HTML or browser code."""
+    return create_client(
+        st.secrets["SUPABASE_URL"],
+        st.secrets["SUPABASE_SECRET_KEY"],
+    )
 
 
 def utcstamp():
-    return datetime.now().astimezone().isoformat(timespec="seconds")
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
 def hashed(pin, salt):
-    return hashlib.pbkdf2_hmac("sha256", pin.encode("utf-8"), bytes.fromhex(salt), 210000).hex()
+    return hashlib.pbkdf2_hmac(
+        "sha256", pin.encode("utf-8"), bytes.fromhex(salt), 210000
+    ).hex()
+
+
+def single(rows):
+    return rows[0] if rows else None
 
 
 def signin(name, pin):
-    with connection() as con:
-        user = con.execute("SELECT * FROM users WHERE name=?", (name,)).fetchone()
-        if user:
-            if not hmac.compare_digest(hashed(pin, user["salt"]), user["pin_hash"]):
-                return None, "이름 또는 비밀번호가 일치하지 않습니다."
-        else:
-            salt=os.urandom(16).hex()
-            con.execute("INSERT INTO users VALUES (?,?,?)", (name, salt, hashed(pin,salt)))
-        session=con.execute("SELECT * FROM sessions WHERE name=? AND status='active' ORDER BY created_at DESC LIMIT 1",(name,)).fetchone()
+    """Register if new, otherwise verify PIN and resume one active session."""
+    db = get_supabase()
+    user = single(
+        db.table("exam_users").select("name,salt,pin_hash").eq("name", name)
+        .limit(1).execute().data
+    )
+    if user is None:
+        salt = os.urandom(16).hex()
+        try:
+            db.table("exam_users").insert({
+                "name": name, "salt": salt, "pin_hash": hashed(pin, salt)
+            }).execute()
+        except Exception:
+            # If two browsers register the same name simultaneously, verify
+            # the already-created account rather than overwriting its PIN.
+            user = single(
+                db.table("exam_users").select("name,salt,pin_hash")
+                .eq("name", name).limit(1).execute().data
+            )
+            if user is None:
+                raise
+    if user is not None and not hmac.compare_digest(
+        hashed(pin, user["salt"]), user["pin_hash"]
+    ):
+        return None, "이름 또는 비밀번호가 일치하지 않습니다."
+
+    session = single(
+        db.table("exam_sessions").select("*").eq("name", name)
+        .eq("status", "active").order("created_at", desc=True)
+        .limit(1).execute().data
+    )
+    if session:
+        return session["id"], None
+
+    sid = str(uuid.uuid4())
+    try:
+        db.table("exam_sessions").insert({
+            "id": sid, "name": name, "status": "active"
+        }).execute()
+    except Exception:
+        # Unique active-session index handles simultaneous logins safely.
+        session = single(
+            db.table("exam_sessions").select("id").eq("name", name)
+            .eq("status", "active").limit(1).execute().data
+        )
         if not session:
-            sid=str(uuid.uuid4())
-            con.execute("INSERT INTO sessions (id,name,created_at,status) VALUES (?,?,?,'active')",(sid,name,utcstamp()))
-        else:
-            sid=session["id"]
-        con.commit()
+            raise
+        sid = session["id"]
     return sid, None
 
 
+def session_row(sid):
+    return single(
+        get_supabase().table("exam_sessions").select("*")
+        .eq("id", sid).limit(1).execute().data
+    )
+
+
 def attempt_rows(sid):
-    with connection() as con:
-        rows=con.execute("SELECT * FROM attempts WHERE session_id=? ORDER BY question_id", (sid,)).fetchall()
-    return {r["question_id"]: dict(r) for r in rows}
+    response = (
+        get_supabase().table("exam_attempts").select("*")
+        .eq("session_id", sid).order("question_id").execute()
+    )
+    # Keep the existing report/UI format compatible with JSON strings,
+    # while PostgreSQL stores answers and feedback natively as JSONB.
+    rows = {}
+    for record in response.data:
+        record = dict(record)
+        for key, default in (("answers", {}), ("feedback", [])):
+            if isinstance(record.get(key), (dict, list)):
+                record[key] = json.dumps(record[key], ensure_ascii=False)
+            elif record.get(key) is None:
+                record[key] = json.dumps(default)
+        rows[record["question_id"]] = record
+    return rows
 
 
 def persist(sid, qid, answers=None, feedback=None, add_seconds=0, checked=False):
-    with connection() as con:
-        con.execute("INSERT OR IGNORE INTO attempts (session_id,question_id,answers,feedback,seconds) VALUES (?,?,'{}','[]',0)",(sid,qid))
-        if answers is not None:
-            con.execute("UPDATE attempts SET answers=? WHERE session_id=? AND question_id=?", (json.dumps(answers,ensure_ascii=False),sid,qid))
-        if feedback is not None:
-            con.execute("UPDATE attempts SET feedback=?,checked_at=? WHERE session_id=? AND question_id=?",(json.dumps(feedback,ensure_ascii=False),utcstamp() if checked else None,sid,qid))
-        if add_seconds>0:
-            con.execute("UPDATE attempts SET seconds=seconds+? WHERE session_id=? AND question_id=?",(round(add_seconds,2),sid,qid))
-        con.commit()
+    db = get_supabase()
+    # Insert once without clobbering a row written by another open tab.
+    db.table("exam_attempts").upsert(
+        {"session_id": sid, "question_id": qid,
+         "answers": {}, "feedback": [], "seconds": 0},
+        on_conflict="session_id,question_id", ignore_duplicates=True
+    ).execute()
+
+    update = {}
+    if answers is not None:
+        update["answers"] = answers
+    if feedback is not None:
+        update["feedback"] = feedback
+        if checked:
+            update["checked_at"] = utcstamp()
+    if update:
+        (db.table("exam_attempts").update(update)
+         .eq("session_id", sid).eq("question_id", qid).execute())
+    if add_seconds > 0:
+        # Database-side atomic increment protects against concurrent logins.
+        db.rpc("exam_add_attempt_seconds", {
+            "p_session_id": sid,
+            "p_question_id": qid,
+            "p_seconds": round(float(add_seconds), 2),
+        }).execute()
+
+
+def finish_session(sid):
+    (get_supabase().table("exam_sessions")
+     .update({"status": "finished", "finished_at": utcstamp()})
+     .eq("id", sid).eq("status", "active").execute())
 
 
 def norm(value):
@@ -117,8 +198,11 @@ def grade(q, values):
     results=[]
     for i, info in enumerate(q.get("grade_labels", [])):
         if info.get("review"):
-            written=any(str(v).strip() for v in values.values())
-            results.append({"label":info["label"],"result":"Review required" if written else "Not answered"})
+            relevant_id = q.get("fields", [])[i]["id"] if i < len(q.get("fields", [])) else None
+            written = (str(values.get(relevant_id, "")).strip() if relevant_id else
+                       any(str(v).strip() for v in values.values()))
+            results.append({"label": info["label"],
+                            "result": "Review required" if written else "Not answered"})
             continue
         rule=next((c for c in q.get("grade_cases",[]) if c["index"]==i),None)
         if not rule:
@@ -152,8 +236,9 @@ def set_question(qid):
 
 def report_pdf(sid, name):
     """Build a color-coded, multipage learner report (without model-answer leakage)."""
-    with connection() as con:
-        session = con.execute("SELECT * FROM sessions WHERE id=?", (sid,)).fetchone()
+    session = session_row(sid)
+    if not session:
+        raise ValueError("Study session not found")
     records = attempt_rows(sid)
     buffer = io.BytesIO()
     # Prefer a locally installed Korean/Latin TTF for more natural letter spacing.
@@ -513,20 +598,23 @@ if not st.session_state.get("session_id"):
         if len(name.strip())<2 or len(pin)<4:
             st.error("이름은 2자 이상, 개인 비밀번호는 4자 이상 입력하세요.")
         else:
-            sid, error=signin(name.strip(), pin)
-            if error:st.error(error)
-            else:
-                st.session_state["session_id"]=sid
-                st.session_state["user_name"]=name.strip()
-                st.session_state["clock_key"]=None
-                st.rerun()
+            try:
+                sid, error = signin(name.strip(), pin)
+                if error:
+                    st.error(error)
+                else:
+                    st.session_state["session_id"] = sid
+                    st.session_state["user_name"] = name.strip()
+                    st.session_state["clock_key"] = None
+                    st.rerun()
+            except Exception:
+                st.error("로그인/저장 중 오류가 발생했습니다. Supabase 테이블과 연결 설정을 확인하세요.")
     st.info("기존 기록은 같은 이름과 개인 비밀번호로 다시 접속하면 이어서 진행합니다. 로그인은 정식 인증 서비스가 아닌 간단한 학습용 인증입니다.")
     st.stop()
 
 sid=st.session_state["session_id"]
 name=st.session_state["user_name"]
-with connection() as con:
-    db_session=con.execute("SELECT * FROM sessions WHERE id=?",(sid,)).fetchone()
+db_session = session_row(sid)
 if not db_session:
     st.session_state.pop("session_id",None);st.rerun()
 
@@ -625,10 +713,8 @@ with mid:
 with right:
     if st.button("Finish session",type="primary"):
         tick(sid)
-        with connection() as con:
-            con.execute("UPDATE sessions SET status='finished', finished_at=? WHERE id=?",(utcstamp(),sid))
-            con.commit()
+        finish_session(sid)
         st.session_state["clock_key"]=None
         st.rerun()
 
-st.caption("Important: The sample SQLite file stored on Streamlit Community Cloud can be lost on app restart/redeployment. For reliable long-term records, connect a managed database such as Supabase. Save interim PDFs as backups. Use Pause / Sign out to stop the timer.")
+st.caption("Study records are stored in Supabase. Pause / Sign out stops timing; Finish session closes the current study session. Keep PDF reports as personal backups.")

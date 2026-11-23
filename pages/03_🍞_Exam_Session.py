@@ -876,7 +876,7 @@ st.markdown(f"**Learner:** {name}")
 # a two-option horizontal selector that also runs only the selected page.
 try:
     practice_tab, history_tab = st.tabs(
-        ["문제풀기 · Practice", "내 학습 기록보기 · History"],
+        ["🐳 문제풀기 · Practice", "🐣 내 학습 기록보기 · History"],
         on_change="rerun", key="study_view_tabs"
     )
     show_practice = bool(practice_tab.open)
@@ -884,12 +884,12 @@ try:
 except TypeError:
     view = st.radio(
         "Study view",
-        ["문제풀기 · Practice", "내 학습 기록보기 · History"],
+        ["🐳 문제풀기 · Practice", "🐣 내 학습 기록보기 · History"],
         horizontal=True, key="study_view_fallback"
     )
     practice_tab = st.container()
     history_tab = st.container()
-    show_practice = view.startswith("문제풀기")
+    show_practice = view.startswith("🐳 문제풀기")
     show_history = not show_practice
 
 if show_history:
@@ -899,7 +899,7 @@ if show_history:
         st.session_state["clock_key"] = None
         st.session_state["clock_at"] = None
     with history_tab:
-        st.subheader("내 학습 기록보기")
+        st.subheader("🐣 내 학습 기록보기")
         st.caption("전체 학습 기록, 문항별 진행 상황, 이전 세션 및 PDF 보고서")
         try:
             history = session_history_details(name)
@@ -924,7 +924,7 @@ if show_practice:
         a.metric("Checked questions", answered)
         b.metric("Recorded time", f"{elapsed/60:.1f} min")
         c.metric("Years available", len({q["year"] for q in QUESTIONS.values()}))
-        st.caption("과거 세션의 기록은 '내 학습 기록보기' 탭에서 확인할 수 있습니다.")
+        st.caption("과거 세션의 기록은 '🐣 내 학습 기록보기' 탭에서 확인할 수 있습니다.")
 
         if db_session["status"] == "finished":
             st.success("This session is finished. You can view earlier sessions in the History tab.")

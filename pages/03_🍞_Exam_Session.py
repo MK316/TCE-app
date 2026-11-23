@@ -961,11 +961,35 @@ if show_practice:
                 st.subheader(f"Question {qid}")
                 st.caption(f"{q.get('original','')} · {q.get('points','')}")
                 for image_path in q.get("images", []):
-                    f = ROOT / "years" / year / image_path
-                    if f.exists():
-                        st.image(str(f), use_container_width=False)
+                    # Use the repository root. A question may be split into
+                    # multiple images (e.g. 2023-1a.png + 2023-1b.png).
+                    expected = ROOT / "years" / str(year) / image_path
+                    matches = []
+                    if expected.is_file():
+                        matches = [expected]
+                    elif expected.parent.is_dir():
+                        files = [p for p in expected.parent.iterdir() if p.is_file()]
+                        # First, allow case variations: .PNG vs .png on Linux.
+                        matches = [p for p in files
+                                   if p.name.casefold() == expected.name.casefold()]
+                        if not matches:
+                            # Manifest may name 2023-1.png, but the repository
+                            # actually holds 2023-1a.png and 2023-1b.png.
+                            # Match ONLY a one-letter suffix to avoid picking
+                            # unrelated questions such as 2023-10.png.
+                            stem = expected.stem.casefold()
+                            extension = expected.suffix.casefold()
+                            matches = [p for p in files
+                                       if p.suffix.casefold() == extension
+                                       and re.fullmatch(re.escape(stem) + r"[a-z]",
+                                                        p.stem.casefold())]
+                    if matches:
+                        for image_file in sorted(matches, key=lambda p: p.name.casefold()):
+                            st.image(str(image_file), use_container_width=False)
                     else:
                         st.error(f"Missing question image: {year}/{image_path}")
+                        st.caption(f"확인할 경로: `years/{year}/{image_path}` (분할된 이미지의 a/b 파일명도 확인)")
+                        logging.warning("Exam image missing on disk: %s", expected)
                 if q.get("extraInstruction"):
                     st.write(q["extraInstruction"])
                 if q.get("incomplete"):

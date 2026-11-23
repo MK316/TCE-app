@@ -870,7 +870,7 @@ sid = st.session_state["session_id"]
 name = st.session_state["user_name"]
 
 # A small session header is cheap; expensive history and PDF work are deferred.
-st.markdown(f"**Learner:** {name}")
+st.markdown(f"**⛄ Current User:** {name}")
 
 # Streamlit 1.55+ supports truly lazy tabs. Older installations fall back to
 # a two-option horizontal selector that also runs only the selected page.

@@ -6,6 +6,7 @@ import hashlib
 import hmac
 import io
 import json
+import logging
 import os
 import re
 import time
@@ -67,32 +68,46 @@ def single(rows):
     return rows[0] if rows else None
 
 
-def signin(name, pin, mode):
-    """Authenticate, then either create a fresh session or resume an existing one.
+class LoginDatabaseError(Exception):
+    """Identify the failed database stage without exposing secrets."""
+    def __init__(self, stage, original):
+        self.stage = stage
+        self.code = getattr(original, "code", None)
+        super().__init__(f"{stage}: {type(original).__name__}")
 
-    'new': preserve older rows, close any currently active session, create a
-           new empty session. This never copies earlier answers.
-    'continue': resume the most recent session, reopening it if finished.
-                All previously submitted answers remain associated with it.
-    """
+
+def login_query(stage, action):
+    try:
+        return action()
+    except Exception as exc:
+        logging.exception("Supabase login failed at stage: %s", stage)
+        raise LoginDatabaseError(stage, exc) from exc
+
+
+def signin(name, pin, mode):
+    """Keep each learner's historical data; select new or continue explicitly."""
     db = get_supabase()
-    user = single(
-        db.table("exam_users").select("name,salt,pin_hash")
-        .eq("name", name).limit(1).execute().data
-    )
+    user = single(login_query(
+        "user_lookup",
+        lambda: db.table("exam_users").select("name,salt,pin_hash")
+            .eq("name", name).limit(1).execute().data
+    ))
     if user is None:
         if mode == "continue":
             return None, "기존 계정을 찾을 수 없습니다. '새로 시작하기'를 선택해 주세요."
         salt = os.urandom(16).hex()
         try:
-            db.table("exam_users").insert({
+            login_query("user_create", lambda: db.table("exam_users").insert({
                 "name": name, "salt": salt, "pin_hash": hashed(pin, salt)
-            }).execute()
-        except Exception:
-            user = single(
+            }).execute())
+        except LoginDatabaseError as exc:
+            # A parallel registration can create the same name. Re-read once
+            # without masking unrelated permission/schema problems.
+            if str(exc.code) != "23505":
+                raise
+            user = single(login_query("user_retry_lookup", lambda:
                 db.table("exam_users").select("name,salt,pin_hash")
-                .eq("name", name).limit(1).execute().data
-            )
+                  .eq("name", name).limit(1).execute().data))
             if user is None:
                 raise
     if user is not None and not hmac.compare_digest(
@@ -100,39 +115,44 @@ def signin(name, pin, mode):
     ):
         return None, "이름 또는 비밀번호가 일치하지 않습니다."
 
-    existing = (
-        db.table("exam_sessions").select("id,status,created_at")
-        .eq("name", name).order("created_at", desc=True)
-        .limit(100).execute().data or []
-    )
-    active = next((x for x in existing if x["status"] == "active"), None)
+    # Find the newest available session. A missing record is a normal state.
+    existing = login_query("session_lookup", lambda:
+        db.table("exam_sessions")
+          .select("id,status,created_at")
+          .eq("name", name).order("created_at", desc=True)
+          .limit(100).execute().data or [])
+    active = next((row for row in existing if row.get("status") == "active"), None)
 
     if mode == "continue":
         if active:
             return active["id"], None
         if existing:
-            # Continue the most recent finished session without deleting its
-            # answers or time totals. There is no active session here.
             previous = existing[0]
-            (db.table("exam_sessions")
-             .update({"status": "active", "finished_at": None})
-             .eq("id", previous["id"])
-             .eq("status", "finished").execute())
+            # Keep historic answers; only reopen this session when finished.
+            response = login_query("session_reopen", lambda:
+                db.table("exam_sessions")
+                  .update({"status": "active", "finished_at": None})
+                  .eq("id", previous["id"])
+                  .eq("status", "finished")
+                  .select("id").execute())
+            if not response.data:
+                # The record may have changed in another browser meanwhile.
+                return None, "세션 상태가 변경되었습니다. 다시 로그인해 주세요."
             return previous["id"], None
         return None, "이어갈 기록이 없습니다. '새로 시작하기'를 선택해 주세요."
 
     if mode != "new":
         return None, "올바른 학습 시작 방식을 선택하세요."
-
-    # Existing active session is closed, not overwritten/deleted, to ensure
-    # that 'new' always begins with a new, blank checklist. Keep prior PDFs.
     if active:
-        finish_session(active["id"])
+        login_query("finish_previous_session", lambda:
+            db.table("exam_sessions")
+              .update({"status": "finished", "finished_at": utcstamp()})
+              .eq("id", active["id"]).execute())
 
     sid = str(uuid.uuid4())
-    db.table("exam_sessions").insert({
+    login_query("session_create", lambda: db.table("exam_sessions").insert({
         "id": sid, "name": name, "status": "active"
-    }).execute()
+    }).execute())
     return sid, None
 
 
@@ -823,8 +843,13 @@ if not st.session_state.get("session_id"):
                     st.session_state["clock_key"] = None
                     st.session_state["clock_at"] = None
                     st.rerun()
+            except LoginDatabaseError as exc:
+                # Technical details are stored in Streamlit server logs only.
+                code = f" (database code: {exc.code})" if exc.code else ""
+                st.error(f"Supabase 작업 실패: {exc.stage}{code}. Streamlit Logs를 확인하세요.")
             except Exception:
-                st.error("로그인/저장 중 오류가 발생했습니다. Supabase 연결 및 테이블 설정을 확인하세요.")
+                logging.exception("Unexpected Study Session login error")
+                st.error("로그인 처리 중 예상하지 못한 오류가 발생했습니다. Streamlit Logs를 확인하세요.")
     st.info(
         "이어 하기: 기존 문항 기록을 확인하고 진행 중인 세션을 계속합니다. "
         "종료된 기록도 다시 열어 이어서 풀 수 있습니다. "

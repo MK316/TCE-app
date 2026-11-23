@@ -233,16 +233,17 @@ def session_history_details(name):
     return details
 
 
-def history_panel(name, active_sid, expanded=False):
+def history_panel(name, active_sid, expanded=False, history=None):
     """Make finished sessions and their PDFs accessible after another login."""
     with st.expander("My study history / Previous sessions", expanded=expanded):
         if st.button("Refresh study history", key="refresh_history"):
             st.rerun()
-        try:
-            history = session_history_details(name)
-        except Exception:
-            st.error("Could not load past sessions from Supabase. Check database access and logs.")
-            return
+        if history is None:
+            try:
+                history = session_history_details(name)
+            except Exception:
+                st.error("Could not load past sessions from Supabase. Check database access and logs.")
+                return
         if not history:
             st.info("No sessions are stored for this learner.")
             return
@@ -308,26 +309,34 @@ def history_panel(name, active_sid, expanded=False):
                 st.info("This session has no saved answers yet.")
         else:
             st.info("This session has no recorded attempts.")
-        st.download_button(
-            "Download selected session PDF",
-            data=report_pdf(selected_id, name),
-            file_name=f"exam_report_{selected_id[:8]}.pdf",
-            mime="application/pdf",
-            key="history_pdf_download",
-        )
+        if st.button("Prepare selected session PDF", key="prepare_history_pdf"):
+            with st.spinner("Preparing PDF report..."):
+                st.session_state["history_pdf_bytes"] = report_pdf(selected_id, name)
+                st.session_state["history_pdf_sid"] = selected_id
+        if (st.session_state.get("history_pdf_sid") == selected_id
+                and st.session_state.get("history_pdf_bytes")):
+            st.download_button(
+                "Download selected session PDF",
+                data=st.session_state["history_pdf_bytes"],
+                file_name=f"exam_report_{selected_id[:8]}.pdf",
+                mime="application/pdf",
+                key="history_pdf_download",
+                on_click="ignore",
+            )
         if selected_id == active_sid:
             st.caption("The selected session is also the current session.")
         st.info("Reports remain session-specific. Earlier SQLite-only data will not appear unless migrated to Supabase.")
 
 
 
-def resumed_summary(name):
+def resumed_summary(name, history=None):
     """Show a readable overview of every question with an answer in past sessions."""
-    try:
-        history = session_history_details(name)
-    except Exception:
-        st.warning("이전 학습 기록을 가져오지 못했습니다. Supabase 연결을 확인하세요.")
-        return
+    if history is None:
+        try:
+            history = session_history_details(name)
+        except Exception:
+            st.warning("이전 학습 기록을 가져오지 못했습니다. Supabase 연결을 확인하세요.")
+            return
     st.subheader("Your learning record")
     if not history:
         st.info("저장된 학습 기록이 없습니다.")
@@ -857,120 +866,195 @@ if not st.session_state.get("session_id"):
     )
     st.stop()
 
-sid=st.session_state["session_id"]
-name=st.session_state["user_name"]
-db_session = session_row(sid)
-if not db_session:
-    st.session_state.pop("session_id",None)
-    st.session_state.pop("login_mode",None)
-    st.rerun()
+sid = st.session_state["session_id"]
+name = st.session_state["user_name"]
 
-if db_session["status"]=="active":
-    tick(sid)
+# A small session header is cheap; expensive history and PDF work are deferred.
+st.markdown(f"**Learner:** {name}")
 
-st.markdown(f"**Learner:** {name}  ·  **Started:** {db_session['created_at']}")
-rows=attempt_rows(sid)
-answered=sum(bool(r["checked_at"]) for r in rows.values())
-elapsed=sum(r["seconds"] for r in rows.values())
-col1,col2,col3=st.columns(3)
-col1.metric("Checked questions",answered)
-col2.metric("Recorded time",f"{elapsed/60:.1f} min")
-col3.metric("Years available",len({q["year"] for q in QUESTIONS.values()}))
+# Streamlit 1.55+ supports truly lazy tabs. Older installations fall back to
+# a two-option horizontal selector that also runs only the selected page.
+try:
+    practice_tab, history_tab = st.tabs(
+        ["문제풀기 · Practice", "내 학습 기록보기 · History"],
+        on_change="rerun", key="study_view_tabs"
+    )
+    show_practice = bool(practice_tab.open)
+    show_history = bool(history_tab.open)
+except TypeError:
+    view = st.radio(
+        "Study view",
+        ["문제풀기 · Practice", "내 학습 기록보기 · History"],
+        horizontal=True, key="study_view_fallback"
+    )
+    practice_tab = st.container()
+    history_tab = st.container()
+    show_practice = view.startswith("문제풀기")
+    show_history = not show_practice
 
-# Historical records and PDF reports stay available across new sessions.
-if st.session_state.get("login_mode") == "continue":
-    resumed_summary(name)
-    history_panel(name, sid, expanded=True)
-else:
-    st.caption("새 학습 세션입니다. 이전 학습 기록은 삭제되지 않았으며 현재 세션에 합산되지 않습니다.")
-
-if db_session["status"]=="finished":
-    st.success("This session is finished. Earlier records are available above. To practice again, start a new session.")
-    st.download_button("Download PDF report",report_pdf(sid,name),file_name=f"exam_report_{sid[:8]}.pdf",mime="application/pdf",type="primary")
-    if st.button("Start a new session"):
-        # Return to the login form. A new session is created only
-        # after the learner enters their name and PIN.
-        st.session_state.pop("session_id", None)
-        st.session_state.pop("user_name", None)
-        st.session_state.pop("login_mode", None)
+if show_history:
+    # Pause practice time when the learner browses previous records.
+    if st.session_state.get("clock_key") and st.session_state.get("clock_at"):
+        tick(sid)
         st.session_state["clock_key"] = None
         st.session_state["clock_at"] = None
-        st.rerun()
-    st.stop()
+    with history_tab:
+        st.subheader("내 학습 기록보기")
+        st.caption("전체 학습 기록, 문항별 진행 상황, 이전 세션 및 PDF 보고서")
+        try:
+            history = session_history_details(name)
+        except Exception:
+            logging.exception("Failed to load study history")
+            st.error("기록 조회에 실패했습니다. Supabase 연결 또는 Logs를 확인하세요.")
+            history = None
+        if history is not None:
+            resumed_summary(name, history=history)
+            history_panel(name, sid, expanded=True, history=history)
 
-st.divider()
-years=sorted({q["year"] for q in QUESTIONS.values()}, reverse=True)
-year=st.selectbox("Select exam year",years,key="session_year")
-year_questions=[q for q in QUESTIONS.values() if q["year"]==year]
-labels=[q["label"] for q in year_questions]
-qid=st.radio("Select question",labels,horizontal=True,key="session_question") if labels else None
-if not qid: st.stop()
-q=QUESTIONS[qid]
-if st.session_state.get("clock_key")!=qid: set_question(qid)
+if show_practice:
+    with practice_tab:
+        db_session = session_row(sid)
+        if not db_session:
+            st.error("현재 학습 세션을 찾지 못했습니다. 다시 로그인하세요.")
+            st.stop()
+        rows = attempt_rows(sid)
+        answered = sum(bool(r.get("checked_at")) for r in rows.values())
+        elapsed = sum(float(r.get("seconds") or 0) for r in rows.values())
+        a, b, c = st.columns(3)
+        a.metric("Checked questions", answered)
+        b.metric("Recorded time", f"{elapsed/60:.1f} min")
+        c.metric("Years available", len({q["year"] for q in QUESTIONS.values()}))
+        st.caption("과거 세션의 기록은 '내 학습 기록보기' 탭에서 확인할 수 있습니다.")
 
-st.subheader(f"Question {qid}")
-st.caption(f"{q.get('original','')} · {q.get('points','')}")
-# Display every original page image without revealing the model answers.
-for image_path in q.get("images",[]):
-    f=ROOT/"years"/year/image_path
-    if f.exists():st.image(str(f),use_container_width=False)
-    else:st.error(f"Missing question image: {year}/{image_path}")
-if q.get("extraInstruction"): st.write(q["extraInstruction"])
-if q.get("incomplete"):
-    st.warning("이 문항은 원문 일부가 누락되어 아직 채점할 수 없습니다.")
-else:
-    st.markdown("**Your answer**")
-    old=json.loads(rows.get(qid,{}).get("answers","{}"))
-    # A dedicated key per question preserves partially edited fields during Streamlit reruns.
-    with st.form("answer_form_"+qid):
-        values={}
-        for f in q.get("fields",[]):
-            wk="answer_"+qid+"_"+f["id"]
-            if wk not in st.session_state:st.session_state[wk]=old.get(f["id"],"")
-            if f["type"]=="textarea":
-                values[f["id"]]=st.text_area(f["label"],key=wk,height=100)
-            elif f["type"]=="choice":
-                st.session_state[wk]=str(st.session_state[wk]) if st.session_state[wk] is not None else ""
-                options=["","1","2","3","4","5"]
-                if st.session_state[wk] not in options:st.session_state[wk]=""
-                values[f["id"]]=st.selectbox(f["label"],options,key=wk,format_func=lambda v:{"":"Choose one","1":"①","2":"②","3":"③","4":"④","5":"⑤"}[v])
-            else:values[f["id"]]=st.text_input(f["label"],key=wk)
-        save=st.form_submit_button("Save answer",type="secondary")
-        check=st.form_submit_button("Check & record",type="primary")
-    if save or check:
-        # Record the interval since the form was displayed.
-        tick(sid)
-        if check:
-            results=grade(q,values)
-            persist(sid,qid,answers=values,feedback=results,checked=True)
-            st.success("Answer and grading result recorded.")
+        if db_session["status"] == "finished":
+            st.success("This session is finished. You can view earlier sessions in the History tab.")
+            if st.button("Prepare finished session PDF", key="prepare_finished_pdf"):
+                with st.spinner("Preparing report..."):
+                    st.session_state["current_pdf_bytes"] = report_pdf(sid, name)
+                    st.session_state["current_pdf_sid"] = sid
+            if (st.session_state.get("current_pdf_sid") == sid
+                    and st.session_state.get("current_pdf_bytes")):
+                st.download_button("Download PDF report", st.session_state["current_pdf_bytes"],
+                                   file_name=f"exam_report_{sid[:8]}.pdf",
+                                   mime="application/pdf", on_click="ignore")
+            if st.button("Start a new session"):
+                for key in ("session_id", "user_name", "login_mode", "clock_key", "clock_at"):
+                    st.session_state.pop(key, None)
+                st.rerun()
         else:
-            persist(sid,qid,answers=values)
-            st.success("Draft saved.")
-        rows=attempt_rows(sid)
-    feedback=json.loads(rows.get(qid,{}).get("feedback","[]"))
-    if feedback:
-        st.markdown("**Recorded feedback**")
-        for item in feedback:st.write(f"{item['label']}: **{item['result']}**")
-    st.caption("Written explanations are recorded as ‘Review required’; they are not automatically marked correct. For model answers, use the existing password-protected yearly practice page.")
+            st.divider()
+            years = sorted({q["year"] for q in QUESTIONS.values()}, reverse=True)
+            year = st.selectbox("Select exam year", years, key="session_year")
+            year_questions = [q for q in QUESTIONS.values() if q["year"] == year]
+            labels = [q["label"] for q in year_questions]
+            qid = st.radio("Select question", labels, horizontal=True,
+                           key="session_question") if labels else None
+            if qid:
+                # Unlike the old version, ordinary reruns don't write time to
+                # Supabase; write only on question changes or explicit actions.
+                if st.session_state.get("clock_key") != qid:
+                    if st.session_state.get("clock_key"):
+                        tick(sid)
+                    set_question(qid)
 
-st.divider()
-left, mid, right=st.columns(3)
-with left:
-    if st.button("Pause / Sign out"):
-        tick(sid)
-        st.session_state["clock_key"]=None
-        st.session_state.pop("session_id",None)
-        st.session_state.pop("user_name",None)
-        st.session_state.pop("login_mode",None)
-        st.rerun()
-with mid:
-    st.download_button("Download current PDF",report_pdf(sid,name),file_name=f"exam_progress_{sid[:8]}.pdf",mime="application/pdf")
-with right:
-    if st.button("Finish session",type="primary"):
-        tick(sid)
-        finish_session(sid)
-        st.session_state["clock_key"]=None
-        st.rerun()
+                q = QUESTIONS[qid]
+                st.subheader(f"Question {qid}")
+                st.caption(f"{q.get('original','')} · {q.get('points','')}")
+                for image_path in q.get("images", []):
+                    f = ROOT / "years" / year / image_path
+                    if f.exists():
+                        st.image(str(f), use_container_width=False)
+                    else:
+                        st.error(f"Missing question image: {year}/{image_path}")
+                if q.get("extraInstruction"):
+                    st.write(q["extraInstruction"])
+                if q.get("incomplete"):
+                    st.warning("이 문항은 원문 일부가 누락되어 아직 채점할 수 없습니다.")
+                else:
+                    st.markdown("**Your answer**")
+                    old = json.loads(rows.get(qid, {}).get("answers", "{}"))
+                    with st.form("answer_form_" + qid):
+                        values = {}
+                        for field in q.get("fields", []):
+                            wk = "answer_" + qid + "_" + field["id"]
+                            if wk not in st.session_state:
+                                st.session_state[wk] = old.get(field["id"], "")
+                            if field["type"] == "textarea":
+                                values[field["id"]] = st.text_area(field["label"], key=wk, height=100)
+                            elif field["type"] == "choice":
+                                st.session_state[wk] = (str(st.session_state[wk])
+                                                        if st.session_state[wk] is not None else "")
+                                options = ["", "1", "2", "3", "4", "5"]
+                                if st.session_state[wk] not in options:
+                                    st.session_state[wk] = ""
+                                values[field["id"]] = st.selectbox(
+                                    field["label"], options, key=wk,
+                                    format_func=lambda v: {
+                                        "": "Choose one", "1": "①", "2": "②",
+                                        "3": "③", "4": "④", "5": "⑤"
+                                    }[v])
+                            else:
+                                values[field["id"]] = st.text_input(field["label"], key=wk)
+                        submitted = st.form_submit_button("Save & record", type="primary")
 
-st.caption("Study records are stored in Supabase. Previous finished sessions are available under My study history. Pause / Sign out stops timing; Finish session closes the current study session.")
+                    if submitted:
+                        # Save answers, feedback and elapsed time in one action.
+                        now = time.monotonic()
+                        then = st.session_state.get("clock_at")
+                        seconds = max(0.0, min(now - then, 86400.0)) if then else 0
+                        results = grade(q, values)
+                        try:
+                            persist(sid, qid, answers=values, feedback=results,
+                                    checked=True, add_seconds=seconds)
+                        except Exception:
+                            logging.exception("Failed to record answer for %s", qid)
+                            st.error("답안 저장에 실패했습니다. Streamlit Logs를 확인하세요.")
+                        else:
+                            st.session_state["clock_at"] = now
+                            st.session_state.pop("current_pdf_bytes", None)
+                            rows[qid] = {**rows.get(qid, {}),
+                                         "answers": json.dumps(values, ensure_ascii=False),
+                                         "feedback": json.dumps(results, ensure_ascii=False),
+                                         "checked_at": utcstamp()}
+                            st.success("답안과 채점 결과를 저장했습니다.")
+
+                    feedback = json.loads(rows.get(qid, {}).get("feedback", "[]"))
+                    if feedback:
+                        st.markdown("**Recorded feedback**")
+                        for item in feedback:
+                            st.write(f"{item['label']}: **{item['result']}**")
+                    st.caption("Written explanations are recorded as 'Review required' and require manual review. Model answers remain password-protected on the yearly practice page.")
+
+            st.divider()
+            left, mid, right = st.columns(3)
+            with left:
+                if st.button("Pause / Sign out"):
+                    if st.session_state.get("clock_key"):
+                        tick(sid)
+                    for key in ("session_id", "user_name", "login_mode", "clock_key", "clock_at"):
+                        st.session_state.pop(key, None)
+                    st.rerun()
+            with mid:
+                if st.button("Prepare current PDF", key="prepare_current_pdf"):
+                    if st.session_state.get("clock_key"):
+                        tick(sid)
+                    with st.spinner("Preparing report..."):
+                        st.session_state["current_pdf_bytes"] = report_pdf(sid, name)
+                        st.session_state["current_pdf_sid"] = sid
+                if (st.session_state.get("current_pdf_sid") == sid
+                        and st.session_state.get("current_pdf_bytes")):
+                    st.download_button("Download current PDF",
+                                       st.session_state["current_pdf_bytes"],
+                                       file_name=f"exam_progress_{sid[:8]}.pdf",
+                                       mime="application/pdf", on_click="ignore")
+            with right:
+                if st.button("Finish session", type="primary"):
+                    if st.session_state.get("clock_key"):
+                        tick(sid)
+                    finish_session(sid)
+                    st.session_state["clock_key"] = None
+                    st.session_state["clock_at"] = None
+                    st.session_state.pop("current_pdf_bytes", None)
+                    st.rerun()
+
+st.caption("Study records are stored in Supabase. Session-specific PDFs are generated on request, not on every interaction.")

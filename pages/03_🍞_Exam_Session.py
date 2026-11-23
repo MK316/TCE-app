@@ -1050,7 +1050,7 @@ if show_practice:
                     st.caption("Written explanations are recorded as 'Review required' and require manual review. Model answers remain password-protected on the yearly practice page.")
 
             st.divider()
-            left, mid, right = st.columns(3)
+            left, right = st.columns(2)
             with left:
                 if st.button("Pause / Sign out"):
                     if st.session_state.get("clock_key"):
@@ -1058,21 +1058,8 @@ if show_practice:
                     for key in ("session_id", "user_name", "login_mode", "clock_key", "clock_at"):
                         st.session_state.pop(key, None)
                     st.rerun()
-            with mid:
-                if st.button("Prepare current PDF", key="prepare_current_pdf"):
-                    if st.session_state.get("clock_key"):
-                        tick(sid)
-                    with st.spinner("Preparing report..."):
-                        st.session_state["current_pdf_bytes"] = report_pdf(sid, name)
-                        st.session_state["current_pdf_sid"] = sid
-                if (st.session_state.get("current_pdf_sid") == sid
-                        and st.session_state.get("current_pdf_bytes")):
-                    st.download_button("Download current PDF",
-                                       st.session_state["current_pdf_bytes"],
-                                       file_name=f"exam_progress_{sid[:8]}.pdf",
-                                       mime="application/pdf", on_click="ignore")
             with right:
-                if st.button("Finish session", type="primary"):
+                if st.button("Finish session to get report", type="primary"):
                     if st.session_state.get("clock_key"):
                         tick(sid)
                     finish_session(sid)
@@ -1081,4 +1068,4 @@ if show_practice:
                     st.session_state.pop("current_pdf_bytes", None)
                     st.rerun()
 
-st.caption("Study records are stored in Supabase. Session-specific PDFs are generated on request, not on every interaction.")
+st.caption("Study records are stored in Supabase. Reports can be prepared and downloaded after finishing a session or from Study History.")

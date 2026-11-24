@@ -37,7 +37,7 @@ Secondary English Teacher Certification Examination.
 
 ---
 
-**Available Exam Year:** 2026
+**Available Exam Year:** 2026~2010
 
 *More exam years and questions will be added over time.*
 """)
